@@ -7,6 +7,8 @@ public class Cell {
     public boolean canWest;
     public boolean canEast;
 
+//    int x;
+//    int y;
 
     public Cell(boolean canNorth, boolean canSouth, boolean canWest, boolean canEast) {
         this.canNorth = canNorth;

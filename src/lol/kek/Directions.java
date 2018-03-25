@@ -1,9 +1,9 @@
 package lol.kek;
 
 public class Directions {
-    public static char[] dirs = {'s', 'w', 'n', 'e'};
+    public char[] dirs = {'S', 'W', 'N', 'E'};
 
-    public static int current = 0;
+    public int current = 0;
 
     public char getNext() {
         current++;
