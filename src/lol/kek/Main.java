@@ -15,6 +15,7 @@ public class Main {
         ArrayList<String[]> kik = FileWork.transform(lil);
         for (String[] s : kik)
             System.out.println(Arrays.toString(s));
+        Flank mainFlank = new Flank("WRWWLWWLWWLWLWRRWRWWWRWWRWLW", "WWRRWLWLWWLWWLWWRWWRWWLW"  );
     }
 
 
