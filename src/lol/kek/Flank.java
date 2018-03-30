@@ -1,4 +1,5 @@
 package lol.kek;
+// pasha_loh obelsya bloh u sobaki mexgdu  nog
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +8,8 @@ import java.util.Arrays;
 //WWRRWLWLWWLWWLWWRWWRWWLW - reverse
 
 public class Flank {
+
+    Directions directions = new Directions();
 
     Board mainBoard;
     Cell focus;
@@ -21,7 +24,7 @@ public class Flank {
 
     public Flank(String straight, String reverse) {
         int numW = 0;
-        this.straight = straight.substring(0, straight.length() - 1);
+        this.straight = straight.substring(1, straight.length() - 1);
         this.reverse = reverse.substring(1, reverse.length() - 1);
 
 
@@ -30,70 +33,101 @@ public class Flank {
             if (i == 'W')
                 numW++;
         }
-        x = numW - 1;
-        y = 0;
+        x = 0;
+        y = numW-1;
         mainBoard = new Board(numW - 2);
-        mainBoard.getCells()[numW + 1][0].canNorth = true;
+        mainBoard.getCells()[x][y].canNorth = true;
 //        mainBoard.getCells()[numW + 1][0].x = 0;
 //        mainBoard.getCells()[numW + 1][0].y = 0;
-        focus = mainBoard.getCells()[numW + 1][0];
+        focus = mainBoard.getCells()[x][y];
     }
 
     void process() {
         char prevDirection = 'S';
-        char currDirection;
 
-        for (int i = 0; i < straight.length(); i++) {
-            System.out.println("i = "+i);
-            currDirection = processDirection(prevDirection, straight.charAt(i));
-            if (straight.charAt(i + 1) == 'W') {
+        char currDirection = flanker(straight, prevDirection);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        prevDirection = currDirection == 'N' ? 'S' : currDirection == 'S' ? 'N' : currDirection == 'W' ? 'E' : 'W';
+        System.out.println("invert "+ prevDirection);
+        while (directions.getCurrent()!=prevDirection)
+            directions.getNext();
+        flanker(reverse, prevDirection);
+    }
+
+    public char flanker(String sequence, char prevDirection) {
+        System.out.println(sequence);
+        char currDirection = '0';
+
+        for (int i = 0; i < sequence.length(); i++) {
+            mainBoard.encrypt();
+            System.out.println("i = " + i);
+            System.out.println(sequence.charAt(i));
+            currDirection = processDirection(prevDirection, sequence.charAt(i));
+            System.out.println("curr "+currDirection);
+            System.out.println("x y "+x+" "+y);
+            boolean flag = false;
+            if(sequence.length()-i - 1>0)
+                flag = sequence.charAt(i + 1) == 'W';
+            else
+                flag = true;
+
+            if (flag) {
                 prevFocus = focus;
                 switch (currDirection) {
                     //  y   x
                     case 'N':
                         // 0 -1
-                        focus = mainBoard.getCells()[y][x-1];
-                        x--;
-                        prevFocus.canSouth = true;
-                        focus.canNorth = true;
+                        if(sequence.length()-i-1>0) {
+                            focus = mainBoard.getCells()[--x][y];
+                            prevFocus.canNorth = true;
+                            focus.canSouth = true;
+                        }
                         break;
                     case 'E':
                         // +1 0
-                        focus = mainBoard.getCells()[y+1][x];
-                        y++;
-                        prevFocus.canWest = true;
-                        focus.canEast = true;
+                        if(sequence.length()-i-1>0) {
+                            focus = mainBoard.getCells()[x][++y];
+                            prevFocus.canEast = true;
+                            focus.canWest = true;
+                        }
                         break;
                     case 'W':
                         // -1 0
-                        focus = mainBoard.getCells()[y-1][x];
-                        y--;
-                        prevFocus.canEast = true;
-                        focus.canWest = true;
+                        if(sequence.length()-i-1>0) {
+                            focus = mainBoard.getCells()[x][--y];
+                            prevFocus.canWest = true;
+                            focus.canEast = true;
+                        }
                         break;
                     case 'S':
                         // 0 +1
-                        focus = mainBoard.getCells()[y][x+1];
-                        x--;
-                        prevFocus.canNorth = true;
-                        focus.canSouth = true;
-
+                        if(sequence.length()-i-1>0) {
+                            focus = mainBoard.getCells()[++x][y];
+                            prevFocus.canSouth = true;
+                            focus.canNorth = true;
+                        }
                         break;
                 }
+                prevDirection = currDirection;
 
             }
         }
+
+        return currDirection;
     }
 
 
     char processDirection(char prev, char next) {
-        Directions directions = new Directions();
-        if (prev == next && next == 'W')
+
+        if (next == 'W')
             return directions.getCurrent();
-        else if (next == 'R')
-            return directions.getNext();
-        else
+        else if (next == 'L')
             return directions.getPrev();
+        else
+            return directions.getNext();
     }
 
+    public Board getMainBoard() {
+        return mainBoard;
+    }
 }

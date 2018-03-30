@@ -18,19 +18,8 @@ public class Cell {
     }
 
     public char encrypt() {
-        String b = (canEast ? "1" : "0") + (canWest ? "1" : "0") + (canSouth ? "1" : "0") + (canNorth ? "1" : "0");
-        int binnum, rem;
-        binnum = Integer.parseInt(b);
-        String hexdecnum="";
-
-        char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-
-        while(binnum>0)
-        {
-            rem = binnum%16;
-            hexdecnum = hex[rem] + hexdecnum;
-            binnum = binnum/16;
-        }
-        return hexdecnum.toString().toCharArray()[0];
+        int b = (canEast ? 8 : 0) + (canWest ? 4 : 0) + (canSouth ? 2 : 0) + (canNorth ? 1 : 0);
+        char hex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        return hex[b];
     }
 }
